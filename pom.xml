@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0"?>
+<project
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+        http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>hm.binkley</groupId>
@@ -33,9 +34,12 @@
 
     <properties>
         <!-- @formatter:off -->
+        <assertj.version>3.18.1</assertj.version>
+        <buildplan-maven-plugin.version>1.4</buildplan-maven-plugin.version>
+        <checkstyle.version>8.38</checkstyle.version>
         <dependency-check-maven.version>6.0.3</dependency-check-maven.version>
-        <detekt-maven-plugin.version>1.11.0</detekt-maven-plugin.version>
-        <dokka.version>1.4.20</dokka.version>
+        <findbugs-annotations.version>3.0.1</findbugs-annotations.version>
+        <findsecbugs-plugin.version>1.11.0</findsecbugs-plugin.version>
         <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
         <jansi.version>2.1.1</jansi.version>
         <java.charset>UTF-8</java.charset>
@@ -49,22 +53,33 @@
         <lombok.version>1.18.16</lombok.version>
         <main.class>hm.binkley.cli.MainKt</main.class>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
+        <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
+        <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
         <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
         <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
+        <maven-pmd-plugin.version>3.14.0</maven-pmd-plugin.version>
+        <maven-profiler-report-directory>${project.build.directory}/site</maven-profiler-report-directory>
         <maven-project-info-reports-plugin.version>3.1.1</maven-project-info-reports-plugin.version>
         <maven-release-plugin.version>3.0.0-M1</maven-release-plugin.version>
         <maven-site-plugin.version>3.9.1</maven-site-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+        <maven-testing-plugins.version>3.0.0-M5</maven-testing-plugins.version>
+        <maven.compiler.parameters>true</maven.compiler.parameters>
         <maven.compiler.source>${jdk.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.version}</maven.compiler.target>
+        <maven.version>3.6.3</maven.version>
         <picocli.version>4.5.2</picocli.version>
         <pitest-junit5-plugin.version>0.12</pitest-junit5-plugin.version>
         <pitest-maven.version>1.6.1</pitest-maven.version>
+        <pmd.version>6.30.0</pmd.version>
         <project.build.sourceEncoding>${java.charset}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${java.charset}</project.reporting.outputEncoding>
+        <spotbugs-maven-plugin.version>4.1.4</spotbugs-maven-plugin.version>
+        <spotbugs.version>4.2.0</spotbugs.version>
+        <system-lambda.version>1.1.1</system-lambda.version>
         <versions-maven-plugin.version>2.8.1</versions-maven-plugin.version>
         <!-- @formatter:on -->
     </properties>
@@ -75,6 +90,19 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <!-- TODO: Both spotbugs AND findbugs annotations!? -->
+        <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+            <version>${spotbugs.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>findbugs-annotations</artifactId>
+            <version>${findbugs-annotations.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>info.picocli</groupId>
@@ -140,6 +168,18 @@
             <version>${kotest.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-lambda</artifactId>
+            <version>${system-lambda.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -152,7 +192,7 @@
                 <configuration>
                     <rules>
                         <requireMavenVersion>
-                            <version>3.6.3</version>
+                            <version>${maven.version}</version>
                         </requireMavenVersion>
                     </rules>
                 </configuration>
@@ -168,6 +208,15 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>${versions-maven-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>fr.jcgay.maven.plugins</groupId>
+                <artifactId>buildplan-maven-plugin</artifactId>
+                <version>${buildplan-maven-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>${maven-clean-plugin.version}</version>
             </plugin>
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
@@ -213,30 +262,74 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint:all,-processing</arg>
+                    </compilerArgs>
+                    <failOnWarning>true</failOnWarning>
+                    <source>${jdk.version}</source>
+                    <release>${jdk.version}</release>
+                </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>${maven-assembly-plugin.version}</version>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>${main.class}</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
+                    <configLocation>config/checkstyle/checkstyle.xml
+                    </configLocation>
+                    <consoleOutput>true</consoleOutput>
+                    <encoding>UTF-8</encoding>
+                    <failsOnError>true</failsOnError>
+                    <includeTestSourceDirectory>true
+                    </includeTestSourceDirectory>
+                    <linkXRef>false</linkXRef>
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <id>validate</id>
+                        <phase>validate</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${checkstyle.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${maven-pmd-plugin.version}</version>
+                <configuration>
+                    <printFailingErrors>true</printFailingErrors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                            <goal>cpd-check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sourceforge.pmd</groupId>
+                        <artifactId>pmd</artifactId>
+                        <version>${pmd.version}</version>
+                        <type>pom</type>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-testing-plugins.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -266,8 +359,7 @@
                                 <rule>
                                     <limits>
                                         <limit>
-                                            <!-- TODO: Raise once Java code is ready -->
-                                            <minimum>22%</minimum>
+                                            <minimum>100%</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
@@ -281,34 +373,11 @@
                 <artifactId>pitest-maven</artifactId>
                 <version>${pitest-maven.version}</version>
                 <configuration>
-                    <avoidCallsTo>
-                        <avoidCallsTo>kotlin.jvm.internal</avoidCallsTo>
-                        <avoidCallsTo>java.util.logging</avoidCallsTo>
-                        <avoidCallsTo>org.apache.log4j</avoidCallsTo>
-                        <avoidCallsTo>org.slf4j</avoidCallsTo>
-                        <avoidCallsTo>org.apache.commons.logging
-                        </avoidCallsTo>
-                    </avoidCallsTo>
                     <coverageThreshold>100</coverageThreshold>
-                    <excludedClasses>
-                        <excludedClass>hm.binkley.cli.MainKt
-                        </excludedClass>
-                    </excludedClasses>
-                    <excludedMethods>
-                        <excludedMethod>byteValue</excludedMethod>
-                        <excludedMethod>doubleValue</excludedMethod>
-                        <excludedMethod>floatValue</excludedMethod>
-                        <excludedMethod>intValue</excludedMethod>
-                        <excludedMethod>longValue</excludedMethod>
-                        <excludedMethod>shortValue</excludedMethod>
-                    </excludedMethods>
+                    <jvmArgs>
+                        <jvmArg>-XX:TieredStopAtLevel=1</jvmArg>
+                    </jvmArgs>
                     <mutationThreshold>100</mutationThreshold>
-                    <targetClasses>
-                        <param>hm.binkley.cli*</param>
-                    </targetClasses>
-                    <targetTests>
-                        <param>hm.binkley.cli*</param>
-                    </targetTests>
                     <timestampedReports>false</timestampedReports>
                 </configuration>
                 <executions>
@@ -329,36 +398,27 @@
                 </dependencies>
             </plugin>
             <plugin>
-                <groupId>com.github.gantsign.maven</groupId>
-                <artifactId>ktlint-maven-plugin</artifactId>
-                <version>${ktlint-maven-plugin.version}</version>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${spotbugs-maven-plugin.version}</version>
                 <configuration>
-                    <verbose>true</verbose>
+                    <plugins>
+                        <plugin>
+                            <groupId>com.h3xstream.findsecbugs</groupId>
+                            <artifactId>findsecbugs-plugin</artifactId>
+                            <version>${findsecbugs-plugin.version}</version>
+                        </plugin>
+                    </plugins>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs</artifactId>
+                        <version>${spotbugs.version}</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
-                        <goals>
-                            <goal>format</goal>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.github.ozsie</groupId>
-                <artifactId>detekt-maven-plugin</artifactId>
-                <version>${detekt-maven-plugin.version}</version>
-                <configuration>
-                    <config>config/detekt.yml</config>
-                    <report>
-                        <report>
-                            html:${basedir}/target/site/detekt/index.html
-                        </report>
-                    </report>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
                         <goals>
                             <goal>check</goal>
                         </goals>
@@ -370,8 +430,6 @@
                 <artifactId>dependency-check-maven</artifactId>
                 <version>${dependency-check-maven.version}</version>
                 <configuration>
-                    <!-- TODO: Windows use of JANSI or JLine might need it -->
-                    <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
                     <failBuildOnAnyVulnerability>true
                     </failBuildOnAnyVulnerability>
                 </configuration>
@@ -384,148 +442,17 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.jetbrains.dokka</groupId>
-                <artifactId>dokka-maven-plugin</artifactId>
-                <version>${dokka.version}</version>
-                <configuration>
-                    <jdkVersion>${jdk.version}</jdkVersion>
-                    <sourceLinks>
-                        <link>
-                            <lineSuffix>#L</lineSuffix>
-                            <path>${project.build.sourceDirectory}</path>
-                            <url>
-                                ${project.scm.url}/blob/master/src/main/kotlin
-                            </url>
-                        </link>
-                    </sourceLinks>
-                </configuration>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven-testing-plugins.version}</version>
                 <executions>
                     <execution>
-                        <phase>pre-site</phase>
                         <goals>
-                            <goal>dokka</goal>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>${maven-source-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>${maven-site-plugin.version}</version>
             </plugin>
         </plugins>
-
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>${maven-project-info-reports-plugin.version}
-                    </version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>${maven-site-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven-surefire-plugin.version}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>${maven-dependency-plugin.version}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>${dependency-check-maven.version}</version>
-                <configuration>
-                    <name>Dependency Check Report</name>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>${versions-maven-plugin.version}</version>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>dependency-updates-report</report>
-                            <report>plugin-updates-report</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>${maven-project-info-reports-plugin.version}
-                </version>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco-maven-plugin.version}</version>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <!-- Must specify to avoid aggregate report -->
-                            <report>report</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>com.github.gantsign.maven</groupId>
-                <artifactId>ktlint-maven-plugin</artifactId>
-                <version>${ktlint-maven-plugin.version}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.pitest</groupId>
-                <artifactId>pitest-maven</artifactId>
-                <version>${pitest-maven.version}</version>
-            </plugin>
-        </plugins>
-    </reporting>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>jcenter</id>
-            <name>JCenter</name>
-            <url>https://jcenter.bintray.com/</url>
-        </pluginRepository>
-    </pluginRepositories>
-
-    <distributionManagement>
-        <repository>
-            <id>bintray-binkley-maven</id>
-            <name>binkley-maven</name>
-            <url>
-                https://api.bintray.com/maven/binkley/maven/rich-cli/;publish=1
-            </url>
-        </repository>
-    </distributionManagement>
 </project>
