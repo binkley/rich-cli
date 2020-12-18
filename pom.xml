@@ -91,17 +91,11 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- TODO: Both spotbugs AND findbugs annotations!? -->
+
         <dependency>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-annotations</artifactId>
             <version>${spotbugs.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>findbugs-annotations</artifactId>
-            <version>${findbugs-annotations.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
