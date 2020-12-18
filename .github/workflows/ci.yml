@@ -35,5 +35,5 @@ jobs:
       - name: Build and verify
         run: ./mvnw --batch-mode --strict-checksums verify
 
-      - name: Create site
-        run: ./mvnw --batch-mode --strict-checksums site
+#      - name: Create site
+#        run: ./mvnw --batch-mode --strict-checksums site
