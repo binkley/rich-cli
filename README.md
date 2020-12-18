@@ -10,4 +10,3 @@ align="right"/>
 [![Public Domain](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](http://unlicense.org/)
 
 Integration of CLI toolings for JVM languages (Java, Kotlin, et al)
-
