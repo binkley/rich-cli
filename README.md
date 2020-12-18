@@ -9,4 +9,38 @@ align="right"/>
 [![issues](https://img.shields.io/github/issues/binkley/rich-cli.svg)](https://github.com/binkley/rich-cli/issues/)
 [![Public Domain](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](http://unlicense.org/)
 
-Integration of CLI toolings for JVM languages (Java, Kotlin, et al)
+"Rich CLI" is an integration of "command-line interface" (CLI) toolings for
+JVM languages (Java, Kotlin, et al) providing a good user experience in a
+terminal.
+
+## Usage
+
+*TODO: FILL IN TEXT ONCE PUBLISHED TO BINTRAY*
+
+---
+
+## TOC
+
+* [Integrated libraries](#integrated-libraries)
+* [API](#api)
+* [Versions](#versions)
+
+---
+
+## Integrated libraries
+
+- [JLine](https://github.com/jline/jline3)
+- [Jansi](https://github.com/fusesource/jansi)
+- [Picocli](https://github.com/remkop/picocli)
+
+---
+
+## API
+
+*TODO*
+
+---
+
+## Versions
+
+* 0-SNAPSHOT

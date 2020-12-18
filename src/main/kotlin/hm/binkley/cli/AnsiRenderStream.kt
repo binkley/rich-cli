@@ -1,5 +1,6 @@
 package hm.binkley.cli
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import org.fusesource.jansi.Ansi
 import org.fusesource.jansi.Ansi.Attribute
 import org.fusesource.jansi.Ansi.Color
@@ -50,6 +51,7 @@ private fun Ansi.render(name: String) = apply {
     }
 }
 
+@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
 private fun render(input: String, target: Appendable): Appendable {
     var i = 0
     var j: Int

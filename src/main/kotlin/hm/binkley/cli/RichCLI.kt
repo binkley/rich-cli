@@ -1,5 +1,6 @@
 package hm.binkley.cli
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import org.fusesource.jansi.Ansi
 import org.fusesource.jansi.AnsiConsole
 import org.jline.reader.Completer
@@ -14,6 +15,7 @@ import org.jline.widget.AutosuggestionWidgets
 import picocli.CommandLine
 import kotlin.system.exitProcess
 
+@SuppressFBWarnings("DM_EXIT")
 class RichCLI<T>(
     name: String,
     val options: T, // picocli needs a union type: not (yet) a Kotlin thing
