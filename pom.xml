@@ -46,7 +46,7 @@
         <jdk.version>11</jdk.version>
         <jline.version>3.18.0</jline.version>
         <junit.version>5.7.0</junit.version>
-        <kotest.version>4.3.1</kotest.version>
+        <kotest.version>4.3.2</kotest.version>
         <kotlin.compiler.jvmTarget>${jdk.version}</kotlin.compiler.jvmTarget>
         <kotlin.version>1.4.21</kotlin.version>
         <ktlint-maven-plugin.version>1.7.0</ktlint-maven-plugin.version>
