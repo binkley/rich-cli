@@ -1,8 +1,11 @@
 package hm.binkley.cli
 
 import com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit
+import org.jline.reader.LineReader
+import org.jline.terminal.Terminal
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 /**
@@ -10,12 +13,26 @@ import org.junit.jupiter.api.Test
  * test library functionality directly 2. Only use mocks as a last resort
  */
 internal class KotlinMainTest {
+    @Suppress("USELESS_IS_CHECK")
     @Test
-    fun shouldConstruct() {
+    fun `should support types`() {
+        val cli = RichCLI(
+            "java.test",
+            TestOptions()
+        )
+
+        assertTrue(cli is AnsiRenderStream)
+        assertTrue(cli is LineReader)
+        assertTrue(cli is Terminal)
+    }
+
+    @Test
+    fun `should construct`() {
         val cli = RichCLI(
             "java.test",
             TestOptions(),
-            "-d", "arg1", "arg2")
+            "-d", "arg1", "arg2"
+        )
 
         val expected = arrayOf("arg1", "arg2")
         assertArrayEquals(expected, cli.options.args, "Wrong arguments")
