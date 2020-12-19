@@ -353,7 +353,7 @@
                                 <rule>
                                     <limits>
                                         <limit>
-                                            <minimum>0%</minimum>
+                                            <minimum>87%</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
@@ -367,11 +367,11 @@
                 <artifactId>pitest-maven</artifactId>
                 <version>${pitest-maven.version}</version>
                 <configuration>
-                    <coverageThreshold>0</coverageThreshold>
+                    <coverageThreshold>100</coverageThreshold>
                     <jvmArgs>
                         <jvmArg>-XX:TieredStopAtLevel=1</jvmArg>
                     </jvmArgs>
-                    <mutationThreshold>0</mutationThreshold>
+                    <mutationThreshold>100</mutationThreshold>
                     <timestampedReports>false</timestampedReports>
                 </configuration>
                 <executions>

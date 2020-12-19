@@ -23,8 +23,8 @@ open class AnsiRenderStream(
     autoFlush: Boolean = false,
 ) : PrintStream(out, autoFlush) {
     override fun print(s: String?) =
-        if (null != s && s.contains(BEGIN_TOKEN)) super.print(render(s))
-        else super.print(s)
+        if (null == s || !s.contains(BEGIN_TOKEN)) super.print(s)
+        else super.print(render(s))
 
     fun println(format: String, vararg args: Any?) =
         println(format.format(*args))
