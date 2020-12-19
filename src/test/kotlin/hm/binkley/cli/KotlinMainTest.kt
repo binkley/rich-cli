@@ -17,10 +17,7 @@ internal class KotlinMainTest {
     @Suppress("USELESS_IS_CHECK")
     @Test
     fun `should support types`() {
-        val cli = RichCLI(
-            "java.test",
-            TestOptions()
-        )
+        val cli = testRichCLI()
 
         assertTrue(cli is AnsiRenderStream)
         assertTrue(cli is LineReader)
@@ -29,11 +26,7 @@ internal class KotlinMainTest {
 
     @Test
     fun `should construct`() {
-        val cli = RichCLI(
-            "java.test",
-            TestOptions(),
-            "-d", "arg1", "arg2"
-        )
+        val cli = testRichCLI("-d", "arg1", "arg2")
 
         val expected = arrayOf("arg1", "arg2")
         assertArrayEquals(expected, cli.options.args, "Wrong arguments")
@@ -41,10 +34,7 @@ internal class KotlinMainTest {
 
     @Test
     fun `should have fish completion`() {
-        val widget = object : Widgets(RichCLI(
-            "java.test",
-            TestOptions()
-        )) {}
+        val widget = object : Widgets(testRichCLI()) {}
 
         assertTrue(widget.existsWidget("_autosuggest-forward-char"),
             "No Fish behavior")
@@ -76,4 +66,11 @@ internal class KotlinMainTest {
 
         assertEquals(2, code, "Did not exit abnormally")
     }
+}
+
+private fun testRichCLI(vararg args: String): RichCLI<TestOptions> {
+    return RichCLI(
+        "java.test",
+        TestOptions(),
+        *args)
 }

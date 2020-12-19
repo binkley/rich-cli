@@ -19,9 +19,7 @@ class JavaMainTest {
     @SuppressWarnings("ConstantConditions")
     @Test
     void shouldSupportTypes() {
-        final var cli = new RichCLI<>(
-                "java.test",
-                new TestOptions());
+        final var cli = testRichCLI();
 
         assertTrue(cli instanceof AnsiRenderStream);
         assertTrue(cli instanceof LineReader);
@@ -30,10 +28,7 @@ class JavaMainTest {
 
     @Test
     void shouldConstruct() {
-        final var cli = new RichCLI<>(
-                "java.test",
-                new TestOptions(),
-                "-d", "arg1", "arg2");
+        final var cli = testRichCLI("-d", "arg1", "arg2");
 
         final String[] expected = {"arg1", "arg2"};
         assertArrayEquals(expected, cli.getOptions().getArgs(),
@@ -42,10 +37,7 @@ class JavaMainTest {
 
     @Test
     void shouldHaveFishCompletion() {
-        final var widget = new Widgets(new RichCLI<>(
-                "java.test",
-                new TestOptions()
-        )) {
+        final var widget = new Widgets(testRichCLI()) {
         };
 
         assertTrue(widget.existsWidget("_autosuggest-forward-char"),
@@ -77,5 +69,12 @@ class JavaMainTest {
         });
 
         assertEquals(2, code, "Did not exit abnormally");
+    }
+
+    private static RichCLI<TestOptions> testRichCLI(final String... args) {
+        return new RichCLI<>(
+                "java.test",
+                new TestOptions(),
+                args);
     }
 }
