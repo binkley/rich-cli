@@ -19,18 +19,16 @@ import kotlin.system.exitProcess
 class RichCLI<T>(
     name: String,
     val options: T, // picocli needs a union type: not (yet) a Kotlin thing
-    private val terminal: Terminal = TerminalBuilder.builder()
-        .name(name)
-        .build(),
+    private val terminal: Terminal = namedTerminal(name),
     completer: Completer = NullCompleter.INSTANCE,
-    private val lineReader: LineReader = LineReaderBuilder.builder()
-        .completer(completer)
-        .terminal(terminal)
-        .build(),
+    private val lineReader: LineReader = completedLineReader(
+        completer,
+        terminal),
     vararg args: String,
 ) : AnsiRenderStream(terminal.output()),
     Terminal by terminal,
     LineReader by lineReader {
+
     init {
         AnsiConsole.systemInstall()
         AutosuggestionWidgets(lineReader).enable()
@@ -46,6 +44,20 @@ class RichCLI<T>(
         }
     }
 
+    // Convenience ctors for Java
+
+    constructor(
+        name: String,
+        options: T,
+        vararg args: String,
+    ) : this(
+        name = name,
+        options = options,
+        // Unneeded parameter to ensure ctor signature is unique
+        terminal = namedTerminal(name),
+        args = args,
+    )
+
     val err get() = AnsiRenderStream(System.err)
 
     /**
@@ -60,6 +72,18 @@ class RichCLI<T>(
     override fun flush() = terminal.flush()
     override fun readMouseEvent(): MouseEvent = terminal.readMouseEvent()
 }
+
+private fun namedTerminal(name: String) = TerminalBuilder.builder()
+    .name(name)
+    .build()
+
+private fun completedLineReader(
+    completer: Completer,
+    terminal: Terminal,
+) = LineReaderBuilder.builder()
+    .completer(completer)
+    .terminal(terminal)
+    .build()
 
 /** @todo This is a hack */
 fun Terminal.isTty() = Size(0, 0) != size
