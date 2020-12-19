@@ -2,6 +2,7 @@ package hm.binkley.cli
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import org.fusesource.jansi.Ansi
+import org.fusesource.jansi.Ansi.ansi
 import org.fusesource.jansi.AnsiConsole
 import org.jline.reader.Completer
 import org.jline.reader.LineReader
@@ -61,13 +62,16 @@ class RichCLI<T>(
     val err get() = AnsiRenderStream(System.err)
 
     /**
-     * For more control over the terminal
+     * For more control of terminal output.  This would be a delegated
+     * interface, however [Ansi] is a concrete class.  Note that this _does
+     * not print_: it formats.
      *
-     * @todo Contrast jansi & jline, possibly picking just jline
+     * @todo Contrast jansi & jline, possibly picking just jline: consider
+     *       rendering
      */
-    fun ansi() = Ansi.ansi()
+    val ansi get() = ansi()
 
-    // Conflict between Terminal and LineReader
+    // Conflicts between Terminal and LineReader
     override fun close() = terminal.close()
     override fun flush() = terminal.flush()
     override fun readMouseEvent(): MouseEvent = terminal.readMouseEvent()

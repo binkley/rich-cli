@@ -1,6 +1,7 @@
 package hm.binkley.cli
 
 import com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit
+import org.fusesource.jansi.Ansi
 import org.jline.reader.LineReader
 import org.jline.terminal.Terminal
 import org.jline.widget.Widgets
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import java.io.PrintStream
 
 /**
  * Testing is a struggle for an integration library.  The goals: 1. Do not
@@ -74,6 +76,17 @@ internal class KotlinMainTest {
         }
 
         assertEquals(2, code, "Did not exit abnormally")
+    }
+
+    @Suppress("USELESS_IS_CHECK")
+    @Test
+    fun shouldHaveAnErrorStream() = with(testRichCLI()) {
+        assertTrue(err is PrintStream)
+    }
+
+    @Test
+    fun shouldHaveAnsiFormatter() = with(testRichCLI()) {
+        assertTrue(ansi is Ansi)
     }
 }
 

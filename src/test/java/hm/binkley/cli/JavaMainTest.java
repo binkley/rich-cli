@@ -1,8 +1,10 @@
 package hm.binkley.cli;
 
+import org.fusesource.jansi.Ansi;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Testing is a struggle for an integration library.  The goals: 1. Do not
@@ -29,6 +31,26 @@ class JavaMainTest {
             final String[] expected = {"arg1", "arg2"};
             assertArrayEquals(expected, cli.getOptions().getArgs(),
                     "Wrong arguments");
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Test
+    void shouldHaveAnErrorStream() {
+        try (var cli = new RichCLI<>(
+                "java.test",
+                new TestOptions())) {
+            assertTrue(cli.getErr() instanceof AnsiRenderStream);
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Test
+    void shouldHaveAnsiFormatter() {
+        try (var cli = new RichCLI<>(
+                "java.test",
+                new TestOptions())) {
+            assertTrue(cli.getAnsi() instanceof Ansi);
         }
     }
 }
