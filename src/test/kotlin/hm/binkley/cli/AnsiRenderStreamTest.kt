@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 
+private const val ESC = "\u001B"
+
 internal class AnsiRenderStreamTest {
     @Test
     fun `should render null`() {
@@ -20,7 +22,10 @@ internal class AnsiRenderStreamTest {
         val ansi = AnsiRenderStream(out)
         ansi.println("stuff")
 
-        assertEquals("stuff\n", out.toString(), "Wrong output")
+        assertEquals(
+            "%s\n".format("stuff"),
+            out.toString(),
+            "Wrong output")
     }
 
     @Test
@@ -29,7 +34,10 @@ internal class AnsiRenderStreamTest {
         val ansi = AnsiRenderStream(out)
         ansi.println("@|fg_red %s|@", "stuff")
 
-        assertEquals("\u001B[31mstuff\u001B[m\n", out.toString(), "Wrong output")
+        assertEquals(
+            "${ascii(31)}%s${ascii(0)}\n".format("stuff"),
+            out.toString(),
+            "Wrong output")
     }
 
     @Test
@@ -38,6 +46,19 @@ internal class AnsiRenderStreamTest {
         val ansi = AnsiRenderStream(out)
         ansi.println("@|bg_red %s|@", "stuff")
 
-        assertEquals("\u001B[41mstuff\u001B[m\n", out.toString(), "Wrong output")
+        assertEquals(
+            "${ascii(41)}%s${ascii(0)}\n".format("stuff"),
+            out.toString(),
+            "Wrong output")
     }
 }
+
+private fun ascii(vararg codes: Int) = codes.map {
+    when (it) {
+        // 0 is valid for reset, however Jansi chooses a missing value, also valid
+        0 -> ""
+        else -> it.toString()
+    }
+}.map {
+    "$ESC[${it}m"
+}.joinToString(";")

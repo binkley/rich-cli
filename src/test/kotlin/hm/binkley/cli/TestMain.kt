@@ -8,11 +8,11 @@ import picocli.CommandLine.Parameters
 private const val name = "test.shell"
 
 fun main(vararg args: String) {
-    RichCLI(
+    with(RichCLI(
         name = name,
         options = TestOptions(),
         args = args,
-    )
+    )) {}
 }
 
 @Command(description = ["Math shell"],

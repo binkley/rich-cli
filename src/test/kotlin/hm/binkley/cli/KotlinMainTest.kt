@@ -16,25 +16,34 @@ import org.junit.jupiter.api.Test
 internal class KotlinMainTest {
     @Suppress("USELESS_IS_CHECK")
     @Test
-    fun `should support types`() {
-        val cli = testRichCLI()
-
-        assertTrue(cli is AnsiRenderStream)
-        assertTrue(cli is LineReader)
-        assertTrue(cli is Terminal)
+    fun `should support types`() = with(testRichCLI()) {
+        assertTrue(this is AnsiRenderStream)
+        assertTrue(this is LineReader)
+        assertTrue(this is Terminal)
     }
 
     @Test
-    fun `should construct`() {
-        val cli = testRichCLI("-d", "arg1", "arg2")
-
-        val expected = arrayOf("arg1", "arg2")
-        assertArrayEquals(expected, cli.options.args, "Wrong arguments")
+    fun `should construct with no args`() = with(testRichCLI()) {
+        assertArrayEquals(
+            arrayOf<String>(),
+            options.args,
+            "Wrong arguments",
+        )
     }
 
     @Test
-    fun `should have fish completion`() {
-        val widget = object : Widgets(testRichCLI()) {}
+    fun `should construct with args`() =
+        with(testRichCLI("-d", "arg1", "arg2")) {
+            assertArrayEquals(
+                arrayOf("arg1", "arg2"),
+                options.args,
+                "Wrong arguments",
+            )
+        }
+
+    @Test
+    fun `should have fish completion`() = with(testRichCLI()) {
+        val widget = object : Widgets(this) {}
 
         assertTrue(widget.existsWidget("_autosuggest-forward-char"),
             "No Fish behavior")
@@ -68,9 +77,7 @@ internal class KotlinMainTest {
     }
 }
 
-private fun testRichCLI(vararg args: String): RichCLI<TestOptions> {
-    return RichCLI(
-        "java.test",
-        TestOptions(),
-        *args)
-}
+private fun testRichCLI(vararg args: String) = RichCLI(
+    "java.test",
+    TestOptions(),
+    *args)
