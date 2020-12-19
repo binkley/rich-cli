@@ -37,7 +37,17 @@ terminal program.
 
 ## API
 
-*TODO*
+### Java
+
+### Kotlin
+
+```kotlin
+    val cli = RichCLI(
+        name = name,
+        options = YourOptions(), // See picocli documentation
+        args = args, // Passed from `main(args)`
+    )
+```
 
 ---
 

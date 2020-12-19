@@ -31,7 +31,7 @@ class TestOptions : Runnable {
 
     @Parameters(
         description = ["Optional rest of the command line."],
-        paramLabel = "REST",
+        paramLabel = "ARGS",
     )
-    var rest = arrayOf<String>()
+    var args = arrayOf<String>()
 }

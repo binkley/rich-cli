@@ -1,10 +1,26 @@
 package hm.binkley.cli
 
 import com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit
+import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
+/**
+ * Testing is a struggle for an integration library.  The goals: 1. Do not
+ * test library functionality directly 2. Only use mocks as a last resort
+ */
 internal class KotlinMainTest {
+    @Test
+    fun shouldConstruct() {
+        val cli = RichCLI(
+            "java.test",
+            TestOptions(),
+            "-d", "arg1", "arg2")
+
+        val expected = arrayOf("arg1", "arg2")
+        assertArrayEquals(expected, cli.options.args, "Wrong arguments")
+    }
+
     @Test
     fun `should show help and exit`() {
         val code = catchSystemExit {
