@@ -22,6 +22,7 @@ terminal program.
 ## TOC
 
 * [Integrated libraries](#integrated-libraries)
+* [Language support](#language-support)
 * [API](#api)
 * [Versions](#versions)
 
@@ -32,6 +33,16 @@ terminal program.
 - [JLine](https://github.com/jline/jline3)
 - [Jansi](https://github.com/fusesource/jansi)
 - [Picocli](https://github.com/remkop/picocli)
+
+---
+
+## Language support
+
+The code is written in Kotlin.  Tests are these languages to demonstrate 
+native support:
+
+- [Java](./src/test/java/hm/binkley/cli/JavaMainTest.java)
+- [Kotlin](./src/test/kotlin/hm/binkley/cli/KotlinMainTest.kt)
 
 ---
 
