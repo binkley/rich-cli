@@ -2,6 +2,7 @@ package hm.binkley.cli;
 
 import org.jline.reader.LineReader;
 import org.jline.terminal.Terminal;
+import org.jline.widget.Widgets;
 import org.junit.jupiter.api.Test;
 
 import static com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit;
@@ -37,6 +38,18 @@ class JavaMainTest {
         final String[] expected = {"arg1", "arg2"};
         assertArrayEquals(expected, cli.getOptions().getArgs(),
                 "Wrong arguments");
+    }
+
+    @Test
+    void shouldHaveFishCompletion() {
+        final var widget = new Widgets(new RichCLI<>(
+                "java.test",
+                new TestOptions()
+        )) {
+        };
+
+        assertTrue(widget.existsWidget("_autosuggest-forward-char"),
+                "No Fish behavior");
     }
 
     @Test

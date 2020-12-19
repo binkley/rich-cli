@@ -3,6 +3,7 @@ package hm.binkley.cli
 import com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit
 import org.jline.reader.LineReader
 import org.jline.terminal.Terminal
+import org.jline.widget.Widgets
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -36,6 +37,17 @@ internal class KotlinMainTest {
 
         val expected = arrayOf("arg1", "arg2")
         assertArrayEquals(expected, cli.options.args, "Wrong arguments")
+    }
+
+    @Test
+    fun `should have fish completion`() {
+        val widget = object : Widgets(RichCLI(
+            "java.test",
+            TestOptions()
+        )) {}
+
+        assertTrue(widget.existsWidget("_autosuggest-forward-char"),
+            "No Fish behavior")
     }
 
     @Test
