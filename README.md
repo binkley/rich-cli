@@ -11,7 +11,7 @@ align="right"/>
 
 "Rich CLI" is an integration of "command-line interface" (CLI) toolings for
 JVM languages (Java, Kotlin, et al) providing a good user experience in a
-terminal.
+terminal program.
 
 ## Usage
 
@@ -43,4 +43,4 @@ terminal.
 
 ## Versions
 
-* 0-SNAPSHOT
+* 0-SNAPSHOT -- Unpublished
