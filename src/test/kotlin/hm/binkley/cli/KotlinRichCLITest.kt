@@ -1,6 +1,8 @@
 package hm.binkley.cli
 
 import com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit
+import com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemErrNormalized
+import com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemOutNormalized
 import org.fusesource.jansi.Ansi
 import org.jline.reader.LineReader
 import org.jline.terminal.Terminal
@@ -24,6 +26,18 @@ internal class KotlinMainTest {
         assertTrue(this is Terminal)
     }
 
+    @Suppress("USELESS_IS_CHECK")
+    @Test
+    fun `should have an error stream`() = with(testRichCLI()) {
+        assertTrue(err is PrintStream)
+    }
+
+    @Suppress("USELESS_IS_CHECK")
+    @Test
+    fun `should have an ANSI formatter`() = with(testRichCLI()) {
+        assertTrue(ansi is Ansi)
+    }
+
     @Test
     fun `should construct with no args`() = with(testRichCLI()) {
         assertArrayEquals(
@@ -44,42 +58,50 @@ internal class KotlinMainTest {
         }
 
     @Test
-    fun `should show help and exit`() {
-        val code = catchSystemExit {
-            main("-h")
+    fun `should show help`() {
+        var code = -1
+        val out = tapSystemOutNormalized {
+            code = catchSystemExit {
+                testRichCLI("-h")
+            }
         }
 
         assertEquals(0, code, "Did not exit normally")
+        assertTrue(out.contains("Usage: test.shell [-dhV] [ARGS...]"),
+            "No sample usage")
+        assertTrue(out.contains(Regex("-d, --debug  *Enable debug output.")),
+            "No help text")
     }
 
     @Test
-    fun `should show version and exit`() {
-        val code = catchSystemExit {
-            main("-V")
+    fun `should show version`() {
+        var code = -1
+        val out = tapSystemOutNormalized {
+            code = catchSystemExit {
+                testRichCLI("-V")
+            }
         }
 
         assertEquals(0, code, "Did not exit normally")
+        assertTrue(out.contains("0-SNAPSHOT"))
     }
 
     @Test
     fun `should complain for unknown option`() {
-        val code = catchSystemExit {
-            main("-?")
+        var code = -1
+        val err = tapSystemErrNormalized {
+            code = catchSystemExit {
+                testRichCLI("-?")
+            }
         }
 
         assertEquals(2, code, "Did not exit abnormally")
-    }
-
-    @Suppress("USELESS_IS_CHECK")
-    @Test
-    fun `should have an error stream`() = with(testRichCLI()) {
-        assertTrue(err is PrintStream)
-    }
-
-    @Suppress("USELESS_IS_CHECK")
-    @Test
-    fun `should have an ANSI formatter`() = with(testRichCLI()) {
-        assertTrue(ansi is Ansi)
+        assertTrue(err.contains("Unknown option: '-?'"),
+            "No bad flag complaint")
+        assertTrue(err.contains("Usage: test.shell [-dhV] [ARGS...]"),
+            "No sample usage")
+        assertTrue(err.contains(Regex("-d, --debug  *Enable debug output.")),
+            "No help text")
     }
 
     @Test
@@ -91,7 +113,4 @@ internal class KotlinMainTest {
     }
 }
 
-private fun testRichCLI(vararg args: String) = RichCLI(
-    "java.test",
-    TestOptions(),
-    *args)
+private fun testRichCLI(vararg args: String) = RichCLI(TestOptions(), *args)

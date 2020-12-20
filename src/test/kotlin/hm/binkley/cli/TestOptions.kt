@@ -4,20 +4,13 @@ import lombok.Data
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
 import picocli.CommandLine.Parameters
+import kotlin.reflect.full.findAnnotation
 
-private const val name = "test.shell"
+const val NAME = "test.shell"
 
-fun main(vararg args: String) {
-    with(RichCLI(
-        name = name,
-        options = TestOptions(),
-        args = args,
-    )) {}
-}
-
-@Command(description = ["Math shell"],
+@Command(description = ["Test shell"],
     mixinStandardHelpOptions = true,
-    name = name,
+    name = NAME,
     version = ["0-SNAPSHOT"])
 @Data
 class TestOptions : Runnable {

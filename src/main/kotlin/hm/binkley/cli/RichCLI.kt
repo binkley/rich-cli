@@ -14,13 +14,14 @@ import org.jline.terminal.Terminal
 import org.jline.terminal.TerminalBuilder
 import org.jline.widget.AutosuggestionWidgets
 import picocli.CommandLine
+import picocli.CommandLine.Command
+import kotlin.reflect.full.findAnnotation
 import kotlin.system.exitProcess
 
 @SuppressFBWarnings("DM_EXIT")
-class RichCLI<T>(
-    name: String,
+class RichCLI<T : Any>(
     val options: T, // picocli needs a union type: not (yet) a Kotlin thing
-    private val terminal: Terminal = namedTerminal(name),
+    private val terminal: Terminal = namedTerminal(commandNameOf(options)),
     completer: Completer = NullCompleter.INSTANCE,
     private val lineReader: LineReader = completedLineReader(
         completer,
@@ -31,9 +32,6 @@ class RichCLI<T>(
     LineReader by lineReader {
 
     init {
-        AnsiConsole.systemInstall()
-        AutosuggestionWidgets(lineReader).enable()
-
         CommandLine(options).apply {
             val code = execute(*args)
             // TODO: How to tie this to @Command settings for exit codes?
@@ -43,19 +41,20 @@ class RichCLI<T>(
                 0 != code -> exitProcess(code)
             }
         }
+
+        AnsiConsole.systemInstall()
+        AutosuggestionWidgets(lineReader).enable()
     }
 
     // Convenience ctors for Java
 
     constructor(
-        name: String,
         options: T,
         vararg args: String,
     ) : this(
-        name = name,
         options = options,
         // Unneeded parameter to ensure ctor signature is unique
-        terminal = namedTerminal(name),
+        terminal = namedTerminal(commandNameOf(options)),
         args = args,
     )
 
@@ -91,3 +90,6 @@ private fun completedLineReader(
 
 /** @todo This is a hack, and broken */
 fun Terminal.isTty() = Size(0, 0) != size
+
+private fun commandNameOf(any: Any) =
+    any::class.findAnnotation<Command>()!!.name
