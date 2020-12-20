@@ -89,5 +89,5 @@ private fun completedLineReader(
     .terminal(terminal)
     .build()
 
-/** @todo This is a hack */
+/** @todo This is a hack, and broken */
 fun Terminal.isTty() = Size(0, 0) != size

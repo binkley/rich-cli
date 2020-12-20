@@ -44,14 +44,6 @@ internal class KotlinMainTest {
         }
 
     @Test
-    fun `should have fish completion`() = with(testRichCLI()) {
-        val widget = object : Widgets(this) {}
-
-        assertTrue(widget.existsWidget("_autosuggest-forward-char"),
-            "No Fish behavior")
-    }
-
-    @Test
     fun `should show help and exit`() {
         val code = catchSystemExit {
             main("-h")
@@ -80,13 +72,22 @@ internal class KotlinMainTest {
 
     @Suppress("USELESS_IS_CHECK")
     @Test
-    fun shouldHaveAnErrorStream() = with(testRichCLI()) {
+    fun `should have an error stream`() = with(testRichCLI()) {
         assertTrue(err is PrintStream)
     }
 
+    @Suppress("USELESS_IS_CHECK")
     @Test
-    fun shouldHaveAnsiFormatter() = with(testRichCLI()) {
+    fun `should have an ANSI formatter`() = with(testRichCLI()) {
         assertTrue(ansi is Ansi)
+    }
+
+    @Test
+    fun `should have fish completion`() = with(testRichCLI()) {
+        val widget = object : Widgets(this) {}
+
+        assertTrue(widget.existsWidget("_autosuggest-forward-char"),
+            "No Fish behavior")
     }
 }
 
