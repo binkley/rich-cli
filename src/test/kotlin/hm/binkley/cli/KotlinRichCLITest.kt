@@ -28,8 +28,8 @@ internal class KotlinMainTest {
 
     @Suppress("USELESS_IS_CHECK")
     @Test
-    fun `should have an error stream`() = with(testRichCLI()) {
-        assertTrue(err is PrintStream)
+    fun `should have an ANSI error stream`() = with(testRichCLI()) {
+        assertTrue(err is AnsiRenderStream)
     }
 
     @Suppress("USELESS_IS_CHECK")
