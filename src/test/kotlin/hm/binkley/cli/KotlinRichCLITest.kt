@@ -67,7 +67,7 @@ internal class KotlinMainTest {
         }
 
         assertEquals(0, code, "Did not exit normally")
-        assertTrue(out.contains("Usage: test.shell [-dhV] [ARGS...]"),
+        assertTrue(out.contains("Usage: %s [-dhV] [ARGS...]".format(NAME)),
             "No sample usage")
         assertTrue(out.contains(Regex("-d, --debug  *Enable debug output.")),
             "No help text")
@@ -98,7 +98,7 @@ internal class KotlinMainTest {
         assertEquals(2, code, "Did not exit abnormally")
         assertTrue(err.contains("Unknown option: '-?'"),
             "No bad flag complaint")
-        assertTrue(err.contains("Usage: test.shell [-dhV] [ARGS...]"),
+        assertTrue(err.contains("Usage: %s [-dhV] [ARGS...]".format(NAME)),
             "No sample usage")
         assertTrue(err.contains(Regex("-d, --debug  *Enable debug output.")),
             "No help text")

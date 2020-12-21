@@ -17,6 +17,13 @@ terminal program.
 
 *TODO: FILL IN TEXT ONCE PUBLISHED TO BINTRAY*
 
+### Build
+
+```shell
+$ ./mvnw clean verify
+$ ./run demo -d arg1 arg2
+```
+
 ---
 
 ## TOC

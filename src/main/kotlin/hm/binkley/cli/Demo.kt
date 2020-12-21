@@ -1,16 +1,23 @@
 package hm.binkley.cli
 
+import lombok.Generated
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
 import picocli.CommandLine.Parameters
 
-const val NAME = "test.shell"
+@Generated
+fun main(vararg args: String): Unit =
+    with(RichCLI(TestOptions(), *args)) {
+        println("DEBUG? -> ${options.debug}")
+        println("ARGS -> ${options.args.toList()}")
+    }
 
-@Command(description = ["Test shell"],
+@Command(description = ["Demo shell"],
     mixinStandardHelpOptions = true,
-    name = NAME,
+    name = "demo.shell",
     version = ["0-SNAPSHOT"])
-class TestOptions : Runnable {
+@Generated
+private class TestOptions : Runnable {
     override fun run() {}
 
     @Option(
