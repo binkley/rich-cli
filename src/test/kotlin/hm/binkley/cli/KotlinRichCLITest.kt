@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import java.io.PrintStream
 
 /**
  * Testing is a struggle for an integration library.  The goals: 1. Do not

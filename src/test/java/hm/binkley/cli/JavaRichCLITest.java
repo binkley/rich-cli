@@ -9,6 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  * test library functionality directly 2. Only use mocks as a last resort
  */
 class JavaRichCLITest {
+    private static RichCLI<TestOptions> testRichCLI(final String... args) {
+        return new RichCLI<>(new TestOptions(), args);
+    }
+
     @Test
     void shouldConstructWithNoArgs() {
         try (var cli = testRichCLI()) {
@@ -25,9 +29,5 @@ class JavaRichCLITest {
             assertArrayEquals(expected, cli.getOptions().getArgs(),
                     "Wrong arguments");
         }
-    }
-
-    private static RichCLI<TestOptions> testRichCLI(final String... args) {
-        return new RichCLI<>(new TestOptions(), args);
     }
 }
