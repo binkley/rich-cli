@@ -13,18 +13,19 @@ import java.util.Locale.ENGLISH
 
 private const val BEGIN_TOKEN = "@|"
 private const val END_TOKEN = "|@"
-private const val CODE_TEXT_SEPARATOR = " "
-private const val CODE_LIST_SEPARATOR = ","
-private const val BEGIN_TOKEN_LEN = 2
-private const val END_TOKEN_LEN = 2
+private val CODE_TEXT_SEPARATOR_PATTERN = " ".toRegex()
+private val CODE_LIST_SEPARATOR_PATTERN = ",".toRegex()
+private const val BEGIN_TOKEN_LEN = BEGIN_TOKEN.length
+private const val END_TOKEN_LEN = END_TOKEN.length
 
 open class AnsiRenderStream(
     out: OutputStream,
     autoFlush: Boolean = false,
 ) : PrintStream(out, autoFlush) {
-    override fun print(s: String?) =
-        if (null == s || !s.contains(BEGIN_TOKEN)) super.print(s)
-        else super.print(render(s))
+    override fun print(s: String?) = when (s) {
+        null -> super.print(null.toString())
+        else -> super.print(render(s))
+    }
 
     fun println(format: String, vararg args: Any?) =
         println(format.format(*args))
@@ -75,14 +76,14 @@ private fun render(input: String, target: Appendable): Appendable {
         j += BEGIN_TOKEN_LEN
         val spec = input.substring(j, k)
         val items = spec
-            .split(CODE_TEXT_SEPARATOR.toRegex(), 2)
+            .split(CODE_TEXT_SEPARATOR_PATTERN, 2)
             .toTypedArray()
         if (1 == items.size) {
             target.append(input)
             return target
         }
         val replacement: String = render(items[1], *items[0]
-            .split(CODE_LIST_SEPARATOR.toRegex())
+            .split(CODE_LIST_SEPARATOR_PATTERN)
             .toTypedArray())
         target.append(replacement)
         i = k + END_TOKEN_LEN

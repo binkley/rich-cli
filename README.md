@@ -15,7 +15,7 @@ terminal program.
 
 ## Usage
 
-*TODO: FILL IN TEXT ONCE PUBLISHED TO BINTRAY*
+**TODO: FILL IN TEXT ONCE PUBLISHED TO BINTRAY**
 
 ### Build
 
