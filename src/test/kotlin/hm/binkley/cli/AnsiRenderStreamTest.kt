@@ -3,128 +3,95 @@ package hm.binkley.cli
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
-
-private const val ESC = "\u001B"
+import java.lang.System.lineSeparator
 
 internal class AnsiRenderStreamTest {
+    private val out = ByteArrayOutputStream()
+    private val ansi = AnsiRenderStream(out)
+
     @Test
     fun `should render null`() {
-        val out = ByteArrayOutputStream()
-        val ansi = AnsiRenderStream(out)
         ansi.println(null as String?)
 
-        assertEquals("null\n", out.toString(), "Wrong output")
+        assertAnsi("null")
     }
 
     @Test
     fun `should render plain text`() {
-        val out = ByteArrayOutputStream()
-        val ansi = AnsiRenderStream(out)
         ansi.println("stuff")
 
-        assertEquals(
-            "%s\n".format("stuff"),
-            out.toString(),
-            "Wrong output")
+        assertAnsi("stuff")
     }
 
     @Test
     fun `should render ignoring unmatched open token`() {
-        val out = ByteArrayOutputStream()
-        val ansi = AnsiRenderStream(out)
         ansi.println("@|stuff")
 
-        assertEquals(
-            "%s\n".format("@|stuff"),
-            out.toString(),
-            "Wrong output")
+        assertAnsi("@|stuff")
     }
 
     @Test
     fun `should render ignoring unmatched close token`() {
-        val out = ByteArrayOutputStream()
-        val ansi = AnsiRenderStream(out)
         ansi.println("stuff|@")
 
-        assertEquals(
-            "%s\n".format("stuff|@"),
-            out.toString(),
-            "Wrong output")
+        assertAnsi("stuff|@")
     }
 
     @Test
     fun `should render ignoring inapplicable tokens`() {
-        val out = ByteArrayOutputStream()
-        val ansi = AnsiRenderStream(out)
         ansi.println("@|stuff|@")
 
-        assertEquals(
-            "%s\n".format("@|stuff|@"),
-            out.toString(),
-            "Wrong output")
+        assertAnsi("@|stuff|@")
     }
 
     @Test
     fun `should render foreground with ASCII escape codes`() {
-        val out = ByteArrayOutputStream()
-        val ansi = AnsiRenderStream(out)
         ansi.println("@|fg_red %s|@", "stuff")
 
-        assertEquals(
-            "${ascii(31)}%s${ascii(0)}\n".format("stuff"),
-            out.toString(),
-            "Wrong output")
+        assertAnsi("${ascii(31)}%s${ascii(0)}"
+            .format("stuff"))
     }
 
     @Test
     fun `should render background with ASCII escape codes`() {
-        val out = ByteArrayOutputStream()
-        val ansi = AnsiRenderStream(out)
         ansi.println("@|bg_red %s|@", "stuff")
 
-        assertEquals(
-            "${ascii(41)}%s${ascii(0)}\n".format("stuff"),
-            out.toString(),
-            "Wrong output")
+        assertAnsi("${ascii(41)}%s${ascii(0)}"
+            .format("stuff"))
     }
 
     @Test
     fun `should render with ASCII attribute escape codes`() {
-        val out = ByteArrayOutputStream()
-        val ansi = AnsiRenderStream(out)
         ansi.println("@|bold %s|@", "stuff")
 
-        assertEquals(
-            "${ascii(1)}%s${ascii(0)}\n".format("stuff"),
-            out.toString(),
-            "Wrong output")
+        assertAnsi("${ascii(1)}%s${ascii(0)}"
+            .format("stuff"))
     }
 
     @Test
     fun `should render with multiple ASCII escape codes`() {
-        val out = ByteArrayOutputStream()
-        val ansi = AnsiRenderStream(out)
         ansi.println("@|bold,blue %s|@", "stuff")
 
-        assertEquals(
-            "${ascii(1, 34)}%s${ascii(0)}\n".format("stuff"),
-            out.toString(),
-            "Wrong output")
+        assertAnsi("${ascii(1, 34)}%s${ascii(0)}"
+            .format("stuff"))
     }
 
     @Test
     fun `should render ASCII escape codes multiple times`() {
-        val out = ByteArrayOutputStream()
-        val ansi = AnsiRenderStream(out)
         ansi.println("@|bold %s|@ @|green %s|@", "stuff", "other stuff")
 
-        assertEquals(
-            "${ascii(1)}%s${ascii(0)} ${ascii(32)}%s${ascii(0)}\n"
-                .format("stuff", "other stuff"),
-            out.toString(),
-            "Wrong output")
+        assertAnsi("${ascii(1)}%s${ascii(0)} ${ascii(32)}%s${ascii(0)}"
+            .format("stuff", "other stuff"))
     }
+
+    private fun assertAnsi(expected: String): Unit = assertEquals(
+        "%s${lineSeparator()}".format(expected),
+        out.toString(),
+        "Wrong output"
+    )
 }
+
+private const val ESC = "\u001B"
 
 private fun ascii(vararg codes: Int) =
     "${ESC}[%sm".format(codes.map {
