@@ -48,7 +48,7 @@ private fun Ansi.render(name: String) = apply {
             if (code.isForeground) fg(code.color)
             else bg(code.color)
         code.isAttribute -> a(code.attribute)
-        else -> error("BUG: Neither a color nor an attribute")
+        else -> error("BUG: Neither a color nor an attribute (impossible)")
     }
 }
 
