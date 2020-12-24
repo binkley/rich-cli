@@ -1,6 +1,7 @@
 package hm.binkley.cli
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import io.kotest.assertions.withClue
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.lang.System.lineSeparator
@@ -84,11 +85,9 @@ internal class AnsiRenderStreamTest {
             .format("stuff", "other stuff"))
     }
 
-    private fun assertAnsi(expected: String): Unit = assertEquals(
-        "%s${lineSeparator()}".format(expected),
-        out.toString(),
-        "Wrong output"
-    )
+    private fun assertAnsi(expected: String) = withClue("Wrong output") {
+        out.toString() shouldBe "%s${lineSeparator()}".format(expected)
+    }
 }
 
 private const val ESC = "\u001B"

@@ -3,13 +3,14 @@ package hm.binkley.cli
 import com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit
 import com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemErrNormalized
 import com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemOutNormalized
+import io.kotest.assertions.withClue
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import org.fusesource.jansi.Ansi
 import org.jline.reader.LineReader
 import org.jline.terminal.Terminal
 import org.jline.widget.Widgets
-import org.junit.jupiter.api.Assertions.assertArrayEquals
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 /**
@@ -20,40 +21,42 @@ internal class KotlinMainTest {
     @Suppress("USELESS_IS_CHECK")
     @Test
     fun `should support types`() = with(testRichCLI()) {
-        assertTrue(this is AnsiRenderStream)
-        assertTrue(this is LineReader)
-        assertTrue(this is Terminal)
+        withClue("Wrong types") {
+            (this is AnsiRenderStream).shouldBeTrue()
+            (this is LineReader).shouldBeTrue()
+            (this is Terminal).shouldBeTrue()
+        }
     }
 
     @Suppress("USELESS_IS_CHECK")
     @Test
     fun `should have an ANSI error stream`() = with(testRichCLI()) {
-        assertTrue(err is AnsiRenderStream)
+        withClue("Wrong type for err property") {
+            (err is AnsiRenderStream).shouldBeTrue()
+        }
     }
 
     @Suppress("USELESS_IS_CHECK")
     @Test
     fun `should have an ANSI formatter`() = with(testRichCLI()) {
-        assertTrue(ansi is Ansi)
+        withClue("Wrong type for ansi property") {
+            (ansi is Ansi).shouldBeTrue()
+        }
     }
 
     @Test
     fun `should construct with no args`() = with(testRichCLI()) {
-        assertArrayEquals(
-            arrayOf<String>(),
-            options.args,
-            "Wrong arguments",
-        )
+        withClue("Wrong arguments") {
+            options.args shouldBe arrayOf()
+        }
     }
 
     @Test
     fun `should construct with args`() =
         with(testRichCLI("-d", "arg1", "arg2")) {
-            assertArrayEquals(
-                arrayOf("arg1", "arg2"),
-                options.args,
-                "Wrong arguments",
-            )
+            withClue("Wrong arguments") {
+                options.args shouldBe arrayOf("arg1", "arg2")
+            }
         }
 
     @Test
@@ -63,13 +66,17 @@ internal class KotlinMainTest {
             code = catchSystemExit {
                 testRichCLI("-h")
             }
-        }
+        }.trim()
 
-        assertEquals(0, code, "Did not exit normally")
-        assertTrue(out.contains("Usage: %s [-dhV] [ARGS...]".format(NAME)),
-            "No sample usage")
-        assertTrue(out.contains(Regex("-d, --debug  *Enable debug output.")),
-            "No help text")
+        withClue("Did not exit normally") {
+            code shouldBe 0
+        }
+        withClue("No sample usage") {
+            out shouldContain "Usage: %s [-dhV] [ARGS...]".format(NAME)
+        }
+        withClue("No help text") {
+            out shouldContain Regex("-d, --debug  *Enable debug output.")
+        }
     }
 
     @Test
@@ -79,10 +86,14 @@ internal class KotlinMainTest {
             code = catchSystemExit {
                 testRichCLI("-V")
             }
-        }
+        }.trim()
 
-        assertEquals(0, code, "Did not exit normally")
-        assertTrue(out.contains("0-SNAPSHOT"))
+        withClue("Did not exit normally") {
+            code shouldBe 0
+        }
+        withClue("Wrong version") {
+            out shouldContain "0-SNAPSHOT"
+        }
     }
 
     @Test
@@ -92,23 +103,30 @@ internal class KotlinMainTest {
             code = catchSystemExit {
                 testRichCLI("-?")
             }
-        }
+        }.trim()
 
-        assertEquals(2, code, "Did not exit abnormally")
-        assertTrue(err.contains("Unknown option: '-?'"),
-            "No bad flag complaint")
-        assertTrue(err.contains("Usage: %s [-dhV] [ARGS...]".format(NAME)),
-            "No sample usage")
-        assertTrue(err.contains(Regex("-d, --debug  *Enable debug output.")),
-            "No help text")
+        withClue("Did not exit normally") {
+            code shouldBe 2
+        }
+        withClue("No bad flag complaint") {
+            err shouldContain "Unknown option: '-?'"
+        }
+        withClue("No sample usage") {
+            err shouldContain "Usage: %s [-dhV] [ARGS...]".format(NAME)
+        }
+        withClue("No help text") {
+            err shouldContain Regex("-d, --debug +Enable debug output.")
+        }
     }
 
     @Test
     fun `should have fish completion`() = with(testRichCLI()) {
         val widget = object : Widgets(this) {}
 
-        assertTrue(widget.existsWidget("_autosuggest-forward-char"),
-            "No Fish behavior")
+        withClue("No Fish behavior") {
+            // Sadly, no constant from JLine for this
+            widget.existsWidget("_autosuggest-forward-char").shouldBeTrue()
+        }
     }
 }
 
