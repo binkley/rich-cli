@@ -20,12 +20,14 @@ import kotlin.system.exitProcess
 
 @SuppressFBWarnings("DM_EXIT")
 class RichCLI<T : Any>(
+    // TODO: Pass in "name" used by all integrations
     val options: T, // picocli needs a union type: not (yet) a Kotlin thing
+    /** @todo A custom terminal *does not* acquire the common name */
     private val terminal: Terminal = namedTerminal(commandNameOf(options)),
     completer: Completer = NullCompleter.INSTANCE,
     private val lineReader: LineReader = completedLineReader(
-        completer,
-        terminal),
+        completer = completer,
+        terminal = terminal),
     vararg args: String,
 ) : AnsiRenderStream(terminal.output()),
     Terminal by terminal,
@@ -84,6 +86,8 @@ private fun completedLineReader(
     completer: Completer,
     terminal: Terminal,
 ) = LineReaderBuilder.builder()
+    // TODO: See https://github.com/jline/jline3/issues/631
+    .appName(terminal.name)
     .completer(completer)
     .terminal(terminal)
     .build()

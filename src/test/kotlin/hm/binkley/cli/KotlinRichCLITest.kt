@@ -7,9 +7,11 @@ import io.kotest.assertions.withClue
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldStartWith
 import org.fusesource.jansi.Ansi
 import org.jline.reader.LineReader
 import org.jline.terminal.Terminal
+import org.jline.terminal.TerminalBuilder
 import org.jline.widget.Widgets
 import org.junit.jupiter.api.Test
 
@@ -55,8 +57,31 @@ internal class KotlinMainTest {
     fun `should construct with args`() =
         with(testRichCLI("-d", "arg1", "arg2")) {
             withClue("Wrong arguments") {
+                options.debug.shouldBeTrue()
                 options.args shouldBe arrayOf("arg1", "arg2")
             }
+        }
+
+    @Test
+    fun `should construct with a custom terminal`(): Unit =
+        with(RichCLI(
+            options = TestOptions(),
+            terminal = TerminalBuilder.builder()
+                .dumb(true)
+                .build(),
+        )) {
+            // NB -- cmd line produces "dumb", IDE "dumb-color"
+            type shouldStartWith "dumb"
+        }
+
+    @Test
+    fun `should construct with a custom completer`(): Unit =
+        with(RichCLI(
+            options = TestOptions(),
+            completer = { _, _, _ -> },
+        )) {
+            // TODO: Sneaky test -- tests 2 things at once
+            appName shouldBe terminal.name
         }
 
     @Test
