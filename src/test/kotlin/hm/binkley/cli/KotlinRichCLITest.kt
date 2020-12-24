@@ -10,10 +10,19 @@ import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldStartWith
 import org.fusesource.jansi.Ansi
 import org.jline.reader.LineReader
+import org.jline.terminal.MouseEvent
+import org.jline.terminal.MouseEvent.Button.Button1
+import org.jline.terminal.MouseEvent.Modifier
+import org.jline.terminal.MouseEvent.Modifier.Alt
+import org.jline.terminal.MouseEvent.Type.Pressed
 import org.jline.terminal.Terminal
 import org.jline.terminal.TerminalBuilder
+import org.jline.terminal.impl.DumbTerminal
 import org.jline.widget.Widgets
 import org.junit.jupiter.api.Test
+import java.lang.System.`in`
+import java.lang.System.out
+import java.util.EnumSet
 
 /**
  * Testing is a struggle for an integration library.  The goals: 1. Do not
@@ -43,6 +52,54 @@ internal class KotlinMainTest {
     fun `should have an ANSI formatter`() = with(testRichCLI()) {
         withClue("Wrong type for ansi property") {
             (ansi is Ansi).shouldBeTrue()
+        }
+    }
+
+    @Test
+    fun `should delegate flush correctly`() {
+        val dummyTerminal = object : DumbTerminal(`in`, out) {
+            var flushed = false
+
+            override fun flush() {
+                flushed = true
+            }
+        }
+
+        with(RichCLI(
+            options = TestOptions(),
+            terminal = dummyTerminal,
+        )) {
+            flush()
+
+            withClue("Did not delegate") {
+                dummyTerminal.flushed shouldBe true
+            }
+        }
+    }
+
+    @Test
+    fun `should delegate mouse event correctly`() {
+        val dummyTerminal = object : DumbTerminal(`in`, out) {
+            var readMouse = false
+
+            override fun readMouseEvent(): MouseEvent {
+                readMouse = true
+                // TODO: Fix this -- how to say *NO* modifiers?
+                val x = EnumSet.of(Alt)
+                x.clear()
+                return MouseEvent(Pressed, Button1, x, 0, 0)
+            }
+        }
+
+        with(RichCLI(
+            options = TestOptions(),
+            terminal = dummyTerminal,
+        )) {
+            readMouseEvent()
+
+            withClue("Did not delegate") {
+                dummyTerminal.readMouse shouldBe true
+            }
         }
     }
 
