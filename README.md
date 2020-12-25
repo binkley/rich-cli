@@ -9,9 +9,9 @@ align="right"/>
 [![issues](https://img.shields.io/github/issues/binkley/rich-cli.svg)](https://github.com/binkley/rich-cli/issues/)
 [![Public Domain](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](http://unlicense.org/)
 
-"Rich CLI" is an integration of "command-line interface" (CLI) toolings for
-JVM languages (Java, Kotlin, et al) providing a good user experience in a
-terminal program.
+"Rich CLI" is an integration of "command-line interface" (CLI) libraries for
+JVM languages (Java, Kotlin, et al), providing a good programmer experience
+for terminal programs.
 
 ## Build
 
@@ -24,14 +24,15 @@ $ ./run demo -d arg1 arg2
 
 ## TOC
 
-* [Integrated libraries](#integrated-libraries)
-* [Language support](#language-support)
+* [Integrations](#integrations)
+* [JVM language support](#jvm-language-support)
 * [API](#api)
 * [Versions](#versions)
+* [TODO](#todo)
 
 ---
 
-## Integrated libraries
+## Integrations
 
 - [JLine](https://github.com/jline/jline3)
 - [Jansi](https://github.com/fusesource/jansi)
@@ -39,13 +40,15 @@ $ ./run demo -d arg1 arg2
 
 ---
 
-## Language support
+## JVM language support
 
-The code is written in Kotlin. Tests are these languages to demonstrate native
-support:
+The code is written in Kotlin, however this library works with any JVM
+language. Tests check these languages:
 
-- [Java](./src/test/java/hm/binkley/cli/JavaMainTest.java)
-- [Kotlin](./src/test/kotlin/hm/binkley/cli/KotlinMainTest.kt)
+- [Java](./src/test/java/hm/binkley/cli/JavaRichCLITest.java) -- validates
+  Java usage
+- [Kotlin](./src/test/kotlin/hm/binkley/cli/KotlinRichCLITest.kt) -- tests
+  functionality
 
 ---
 
@@ -56,59 +59,76 @@ support:
 Note that the name of your program for `Terminal` and `LineReader` is read
 from the `name` value of the `@Command` annotation on your options class.
 
-A `RichCLI` is also a:
+A `RichCLI` is also:
 
-- `AnsiRenderStream` (STDOUT based on Jansi)
-- `Terminal` (a JLine type)
-- `LineReader` (a JLine type)
+- An `AnsiRenderStream` (STDOUT based on Jansi)
+- A `Terminal` (a JLine type)
+- A `LineReader` (a JLine type)
 
-`RichCLI` also provides:
+As well `RichCLI` provides:
 
 #### Properties
-
-**NB** &mdash; In Java these properties are standard getters.
 
 - `ansi` direct access to methods on `Ansi`
 - `err` STDERR, also an `AnsiRenderStream` based on Jansi
 
-#### Java
+**NB** &mdash; In Java these properties are getters.
+
+#### Methods
+
+- `isTty()` -- checks if the terminal is attached to a console
+
+#### Java example
 
 ```java
 class YourMain {
     public static void main(final String... args) {
         final var cli = new RichCLI<>(new YourOptions(), args);
+
         // Use your CLI ...
     }
 }
 ```
 
-#### Kotlin
+#### Kotlin example
 
 ```kotlin
 fun main() {
     val cli = RichCLI(YourOptions(), *args)
+
     // Use your CLI ...
 }
 ```
 
 ### `AnsiRenderStream`
 
-An `AnsiRenderStream` is also a:
+An `AnsiRenderStream` is also:
 
-- `PrintStream` (like STDOUT and STDERR)
+- A `PrintStream` (like STDOUT and STDERR)
 
-`AnsiRenderStream` also provides:
+As well `AnsiRenderStream` provides:
 
 #### Methods
 
 - `print(String)` -- an override which parses Jansi-rendered text (see the
   original
   [Jansi-1.18 documentation](https://github.com/fusesource/jansi/blob/jansi-project-1.18/jansi/src/main/java/org/fusesource/jansi/AnsiRenderer.java)
-  for syntax details)
-- `println(String, Object...)` -- a convenience to format and print lines
+  for syntax details) and prints to
+  [STDOUT](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/System.html#out)
+- `println(String, Object...)` -- a convenience method to
+  [format](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html#format(java.lang.String,java.lang.Object...))
+  and prints lines to
+  [STDOUT](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/System.html#out)
 
 ---
 
 ## Versions
 
 * 0-SNAPSHOT -- Unpublished
+
+---
+
+## TODO
+
+* Address method `RichCLI.isTty()` -- neither JLine nor the JDK handle this
+  well
