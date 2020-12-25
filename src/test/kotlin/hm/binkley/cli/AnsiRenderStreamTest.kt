@@ -32,6 +32,13 @@ internal class AnsiRenderStreamTest {
     }
 
     @Test
+    fun `should render ignoring bare unmatched open token`() {
+        ansi.println("@|")
+
+        assertAnsi("@|")
+    }
+
+    @Test
     fun `should render ignoring unmatched close token`() {
         ansi.println("stuff|@")
 
@@ -39,10 +46,24 @@ internal class AnsiRenderStreamTest {
     }
 
     @Test
+    fun `should render ignoring bare unmatched close token`() {
+        ansi.println("|@")
+
+        assertAnsi("|@")
+    }
+
+    @Test
     fun `should render ignoring inapplicable tokens`() {
         ansi.println("@|stuff|@")
 
         assertAnsi("@|stuff|@")
+    }
+
+    @Test
+    fun `should render ignoring bare inapplicable tokens`() {
+        ansi.println("@||@")
+
+        assertAnsi("@||@")
     }
 
     @Test
