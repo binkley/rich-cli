@@ -13,7 +13,6 @@ import org.jline.reader.LineReader
 import org.jline.terminal.MouseEvent
 import org.jline.terminal.MouseEvent.Button.Button1
 import org.jline.terminal.MouseEvent.Modifier
-import org.jline.terminal.MouseEvent.Modifier.Alt
 import org.jline.terminal.MouseEvent.Type.Pressed
 import org.jline.terminal.Terminal
 import org.jline.terminal.TerminalBuilder
@@ -57,7 +56,7 @@ internal class KotlinMainTest {
 
     @Test
     fun `should delegate flush correctly`() {
-        val dummyTerminal = object : DumbTerminal(`in`, out) {
+        val testTerminal = object : DumbTerminal(`in`, out) {
             var flushed = false
 
             override fun flush() {
@@ -67,38 +66,39 @@ internal class KotlinMainTest {
 
         with(RichCLI(
             options = TestOptions(),
-            terminal = dummyTerminal,
+            terminal = testTerminal,
         )) {
             flush()
 
             withClue("Did not delegate") {
-                dummyTerminal.flushed shouldBe true
+                testTerminal.flushed shouldBe true
             }
         }
     }
 
     @Test
     fun `should delegate mouse event correctly`() {
-        val dummyTerminal = object : DumbTerminal(`in`, out) {
+        val testTerminal = object : DumbTerminal(`in`, out) {
             var readMouse = false
 
-            override fun readMouseEvent(): MouseEvent {
+            override fun readMouseEvent() = MouseEvent(
+                Pressed,
+                Button1,
+                EnumSet.noneOf(Modifier::class.java),
+                0,
+                0).also {
                 readMouse = true
-                // TODO: Fix this -- how to say *NO* modifiers?
-                val x = EnumSet.of(Alt)
-                x.clear()
-                return MouseEvent(Pressed, Button1, x, 0, 0)
             }
         }
 
         with(RichCLI(
             options = TestOptions(),
-            terminal = dummyTerminal,
+            terminal = testTerminal,
         )) {
             readMouseEvent()
 
             withClue("Did not delegate") {
-                dummyTerminal.readMouse shouldBe true
+                testTerminal.readMouse shouldBe true
             }
         }
     }
