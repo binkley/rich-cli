@@ -4,6 +4,7 @@ import com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit
 import com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemErrNormalized
 import com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemOutNormalized
 import io.kotest.assertions.withClue
+import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -16,6 +17,7 @@ import org.jline.terminal.MouseEvent
 import org.jline.terminal.MouseEvent.Button.Button1
 import org.jline.terminal.MouseEvent.Modifier
 import org.jline.terminal.MouseEvent.Type.Pressed
+import org.jline.terminal.Size
 import org.jline.terminal.Terminal
 import org.jline.terminal.TerminalBuilder
 import org.jline.terminal.impl.DumbTerminal
@@ -217,6 +219,36 @@ internal class KotlinMainTest {
         withClue("No Fish behavior") {
             // Sadly, no constant from JLine for this
             widget.existsWidget("_autosuggest-forward-char").shouldBeTrue()
+        }
+    }
+
+    @Test // TODO: The production code relies on a *hack*
+    fun `should know if attached to a console`() {
+        with(RichCLI(
+            options = TestOptions(),
+            terminal = TerminalBuilder.builder()
+                .size(Size(1, 1)) // TODO: Hack
+                .system(false)
+                .build(),
+        )) {
+            withClue("Not attached to a console") {
+                isTty().shouldBeTrue()
+            }
+        }
+    }
+
+    @Test // TODO: The production code relies on a *hack*
+    fun `should know if not attached to a console`() {
+        with(RichCLI(
+            options = TestOptions(),
+            terminal = TerminalBuilder.builder()
+                .size(Size(0, 0)) // TODO: Hack
+                .system(false)
+                .build(),
+        )) {
+            withClue("Not unattached to a console") {
+                isTty().shouldBeFalse()
+            }
         }
     }
 }

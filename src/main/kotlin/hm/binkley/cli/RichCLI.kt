@@ -78,6 +78,9 @@ class RichCLI<T : Any>(
     override fun readMouseEvent(): MouseEvent = terminal.readMouseEvent()
 }
 
+/** @todo This is a hack, and broken */
+fun Terminal.isTty() = Size(0, 0) != size
+
 private fun namedTerminal(name: String) = TerminalBuilder.builder()
     .name(name)
     .build()
@@ -91,9 +94,6 @@ private fun completedLineReader(
     .completer(completer)
     .terminal(terminal)
     .build()
-
-/** @todo This is a hack, and broken */
-fun Terminal.isTty() = Size(0, 0) != size
 
 private fun commandNameOf(any: Any) =
     any::class.findAnnotation<Command>()!!.name
