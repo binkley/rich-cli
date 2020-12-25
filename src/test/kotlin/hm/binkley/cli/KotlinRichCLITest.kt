@@ -7,9 +7,11 @@ import io.kotest.assertions.withClue
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import io.kotest.matchers.string.shouldStartWith
 import org.fusesource.jansi.Ansi
+import org.jline.reader.Candidate
 import org.jline.reader.LineReader
+import org.jline.reader.LineReaderBuilder
+import org.jline.reader.ParsedLine
 import org.jline.terminal.MouseEvent
 import org.jline.terminal.MouseEvent.Button.Button1
 import org.jline.terminal.MouseEvent.Modifier
@@ -28,6 +30,51 @@ import java.util.EnumSet
  * test library functionality directly 2. Only use mocks as a last resort
  */
 internal class KotlinMainTest {
+    @Test
+    fun `should construct with no args`() = with(testRichCLI()) {
+        withClue("Wrong arguments") {
+            options.args shouldBe arrayOf()
+        }
+    }
+
+    @Test
+    fun `should construct with args`() =
+        with(testRichCLI("-d", "arg1", "arg2")) {
+            withClue("Wrong arguments") {
+                options.debug.shouldBeTrue()
+                options.args shouldBe arrayOf("arg1", "arg2")
+            }
+        }
+
+    @Test
+    fun `should construct with custom everything`() {
+        // TODO: Silly to provide a Completer parameter when it is only used
+        //       as convenience in the default lineReader parameter value
+        val completer: (LineReader, ParsedLine, MutableList<Candidate>) -> Unit =
+            { _, _, _ -> }
+        val terminal = TerminalBuilder.builder()
+            .dumb(true)
+            .build()
+        val lineReader = LineReaderBuilder.builder()
+            .appName(terminal.name)
+            .completer(completer)
+            .terminal(terminal)
+            .build()
+        val options = TestOptions()
+
+        // Test that:
+        // 1. Compiles
+        // 2. Does not throw
+        RichCLI(
+            completer = completer,
+            lineReader = lineReader,
+            options = options,
+            terminal = terminal,
+            // See https://youtrack.jetbrains.com/issue/KT-17691
+            args = arrayOf("-d", "arg1", "arg2"),
+        )
+    }
+
     @Suppress("USELESS_IS_CHECK")
     @Test
     fun `should support types`() = with(testRichCLI()) {
@@ -102,44 +149,6 @@ internal class KotlinMainTest {
             }
         }
     }
-
-    @Test
-    fun `should construct with no args`() = with(testRichCLI()) {
-        withClue("Wrong arguments") {
-            options.args shouldBe arrayOf()
-        }
-    }
-
-    @Test
-    fun `should construct with args`() =
-        with(testRichCLI("-d", "arg1", "arg2")) {
-            withClue("Wrong arguments") {
-                options.debug.shouldBeTrue()
-                options.args shouldBe arrayOf("arg1", "arg2")
-            }
-        }
-
-    @Test
-    fun `should construct with a custom terminal`(): Unit =
-        with(RichCLI(
-            options = TestOptions(),
-            terminal = TerminalBuilder.builder()
-                .dumb(true)
-                .build(),
-        )) {
-            // NB -- cmd line produces "dumb", IDE "dumb-color"
-            type shouldStartWith "dumb"
-        }
-
-    @Test
-    fun `should construct with a custom completer`(): Unit =
-        with(RichCLI(
-            options = TestOptions(),
-            completer = { _, _, _ -> },
-        )) {
-            // TODO: Sneaky test -- tests 2 things at once
-            appName shouldBe terminal.name
-        }
 
     @Test
     fun `should show help`() {
