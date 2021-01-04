@@ -134,6 +134,7 @@ As well `AnsiRenderStream` provides:
 * [_Command Line Interface Guidelines_](https://clig.dev/)
 * [GNU option
   standards](https://www.gnu.org/prep/standards/html_node/Option-Table.html)
+* [`picocli-shell-jline3`](https://github.com/remkop/picocli/tree/master/picocli-shell-jline3)
 
 ---
 
