@@ -7,7 +7,7 @@ import picocli.CommandLine.Parameters
 
 @Generated
 fun main(vararg args: String): Unit =
-    with(RichCLI(TestOptions(), *args)) {
+    with(RichCLI(DemoOptions(), *args)) {
         println("TTY? -> @|bold,red %b|@", isAnsi())
         println("DEBUG? -> ${options.debug}")
         println("ARGS -> ${options.args.toList()}")
@@ -18,7 +18,7 @@ fun main(vararg args: String): Unit =
     name = "demo.shell",
     version = ["0-SNAPSHOT"])
 @Generated
-private class TestOptions : Runnable {
+private class DemoOptions : Runnable {
     override fun run() {}
 
     @Option(

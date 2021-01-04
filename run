@@ -11,7 +11,7 @@ package=hm.binkley.cli
 artifactId=rich-cli
 version=0-SNAPSHOT
 
-function mangle-classname() {
+function mangle-kotlin-classname() {
     local IFS=.
 
     local -a parts
@@ -55,7 +55,7 @@ case $# in
 *)
     class="$1"
     shift
-    set - -cp "$jar" "$(mangle-classname "$package.$class")" "$@"
+    set - -cp "$jar" "$(mangle-kotlin-classname "$package.$class")" "$@"
     ;;
 esac
 $debug && set -x # "set - ..." clears the -x flag
