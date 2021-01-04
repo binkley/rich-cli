@@ -28,6 +28,7 @@ $ ./run demo -d arg1 arg2
 * [JVM language support](#jvm-language-support)
 * [API](#api)
 * [Versions](#versions)
+* [Further reading](#further-reading)
 * [TODO](#todo)
 
 ---
@@ -125,6 +126,14 @@ As well `AnsiRenderStream` provides:
 ## Versions
 
 * 0-SNAPSHOT -- Unpublished
+
+---
+
+## Further reading
+
+* [_Command Line Interface Guidelines_](https://clig.dev/)
+* [GNU option
+  standards](https://www.gnu.org/prep/standards/html_node/Option-Table.html)
 
 ---
 
