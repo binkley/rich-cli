@@ -72,7 +72,7 @@
         <maven.compiler.source>${jdk.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.version}</maven.compiler.target>
         <maven.version>3.6.3</maven.version>
-        <picocli.version>4.5.2</picocli.version>
+        <picocli.version>4.6.1</picocli.version>
         <pitest-junit5-plugin.version>0.12</pitest-junit5-plugin.version>
         <pitest-maven.version>1.6.1</pitest-maven.version>
         <pmd.version>6.30.0</pmd.version>
