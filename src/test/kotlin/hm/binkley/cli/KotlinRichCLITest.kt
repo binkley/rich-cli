@@ -31,7 +31,7 @@ import java.util.EnumSet
  * Testing is a struggle for an integration library.  The goals: 1. Do not
  * test library functionality directly 2. Only use mocks as a last resort
  */
-internal class KotlinMainTest {
+internal class KotlinRichCLITest {
     @Test
     fun `should construct with no args`() = with(testRichCLI()) {
         withClue("Wrong arguments") {
