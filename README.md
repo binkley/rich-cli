@@ -77,7 +77,8 @@ As well `RichCLI` provides:
 
 #### Methods
 
-- `isTty()` -- checks if the terminal is attached to a console
+- `isAnsi()` -- checks if the terminal should use ANSI based on [Picocli 
+  heuristics](https://picocli.info/#_heuristics_for_enabling_ansi)
 
 #### Java example
 
@@ -135,10 +136,3 @@ As well `AnsiRenderStream` provides:
 * [GNU option
   standards](https://www.gnu.org/prep/standards/html_node/Option-Table.html)
 * [`picocli-shell-jline3`](https://github.com/remkop/picocli/tree/master/picocli-shell-jline3)
-
----
-
-## TODO
-
-* Address method `RichCLI.isTty()` -- neither JLine nor the JDK handle this
-  well

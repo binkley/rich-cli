@@ -17,16 +17,14 @@ import org.jline.terminal.MouseEvent
 import org.jline.terminal.MouseEvent.Button.Button1
 import org.jline.terminal.MouseEvent.Modifier
 import org.jline.terminal.MouseEvent.Type.Pressed
-import org.jline.terminal.Size
 import org.jline.terminal.Terminal
 import org.jline.terminal.TerminalBuilder
 import org.jline.terminal.impl.DumbTerminal
 import org.jline.widget.Widgets
 import org.junit.jupiter.api.Test
-import java.io.InputStream
 import java.io.InputStream.nullInputStream
-import java.io.OutputStream
 import java.io.OutputStream.nullOutputStream
+import java.io.PrintStream
 import java.lang.System.`in`
 import java.lang.System.out
 import java.util.EnumSet
@@ -85,7 +83,7 @@ internal class KotlinRichCLITest {
     @Test
     fun `should support types`() = with(testRichCLI()) {
         withClue("Wrong types") {
-            (this is AnsiRenderStream).shouldBeTrue()
+            (this is PrintStream).shouldBeTrue()
             (this is LineReader).shouldBeTrue()
             (this is Terminal).shouldBeTrue()
         }
@@ -226,34 +224,17 @@ internal class KotlinRichCLITest {
         }
     }
 
-    @Test // TODO: The production code relies on a *hack*
-    fun `should know if attached to a console`() {
+    @Test
+    fun `should know if not not using ANSI`() {
         with(RichCLI(
             options = TestOptions(),
             terminal = TerminalBuilder.builder()
-                .size(Size(1, 1)) // TODO: Hack
                 .streams(nullInputStream(), nullOutputStream())
                 .system(false)
                 .build(),
         )) {
-            withClue("Not attached to a console") {
-                isTty().shouldBeTrue()
-            }
-        }
-    }
-
-    @Test // TODO: The production code relies on a *hack*
-    fun `should know if not attached to a console`() {
-        with(RichCLI(
-            options = TestOptions(),
-            terminal = TerminalBuilder.builder()
-                .size(Size(0, 0)) // TODO: Hack
-                .streams(nullInputStream(), nullOutputStream())
-                .system(false)
-                .build(),
-        )) {
-            withClue("Not unattached to a console") {
-                isTty().shouldBeFalse()
+            withClue("Using ANSI, but should not") {
+                isAnsi().shouldBeFalse()
             }
         }
     }

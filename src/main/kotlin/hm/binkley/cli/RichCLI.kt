@@ -78,8 +78,12 @@ class RichCLI<T : Any>(
     override fun readMouseEvent(): MouseEvent = terminal.readMouseEvent()
 }
 
-/** @todo This is a hack, and broken */
-fun Terminal.isTty() = Size(0, 0) != size
+/**
+ * *NB* &mdash; PicoCLI ignores `TERM=dumb` if it thinks the terminal is
+ * attached to a console
+ */
+@Suppress("unused")
+fun Terminal.isAnsi() = CommandLine.Help.Ansi.AUTO.enabled()
 
 private fun namedTerminal(name: String) = TerminalBuilder.builder()
     .name(name)

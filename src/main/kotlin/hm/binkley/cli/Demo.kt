@@ -8,6 +8,7 @@ import picocli.CommandLine.Parameters
 @Generated
 fun main(vararg args: String): Unit =
     with(RichCLI(TestOptions(), *args)) {
+        println("TTY? -> @|bold,red %b|@", isAnsi())
         println("DEBUG? -> ${options.debug}")
         println("ARGS -> ${options.args.toList()}")
     }
@@ -21,7 +22,7 @@ private class TestOptions : Runnable {
     override fun run() {}
 
     @Option(
-        description = ["Enable debug output."],
+        description = ["Enable @|bold,red debug|@ output."],
         names = ["--debug", "-d"],
     )
     var debug = false
