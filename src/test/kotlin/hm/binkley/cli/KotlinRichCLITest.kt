@@ -23,6 +23,10 @@ import org.jline.terminal.TerminalBuilder
 import org.jline.terminal.impl.DumbTerminal
 import org.jline.widget.Widgets
 import org.junit.jupiter.api.Test
+import java.io.InputStream
+import java.io.InputStream.nullInputStream
+import java.io.OutputStream
+import java.io.OutputStream.nullOutputStream
 import java.lang.System.`in`
 import java.lang.System.out
 import java.util.EnumSet
@@ -228,6 +232,7 @@ internal class KotlinRichCLITest {
             options = TestOptions(),
             terminal = TerminalBuilder.builder()
                 .size(Size(1, 1)) // TODO: Hack
+                .streams(nullInputStream(), nullOutputStream())
                 .system(false)
                 .build(),
         )) {
@@ -243,6 +248,7 @@ internal class KotlinRichCLITest {
             options = TestOptions(),
             terminal = TerminalBuilder.builder()
                 .size(Size(0, 0)) // TODO: Hack
+                .streams(nullInputStream(), nullOutputStream())
                 .system(false)
                 .build(),
         )) {
