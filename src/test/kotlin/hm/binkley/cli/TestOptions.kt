@@ -10,7 +10,7 @@ const val NAME = "test.shell"
     mixinStandardHelpOptions = true,
     name = NAME,
     version = ["0-SNAPSHOT"])
-class TestOptions : Runnable {
+internal class TestOptions : Runnable {
     override fun run() {}
 
     @Option(

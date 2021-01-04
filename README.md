@@ -17,7 +17,8 @@ for terminal programs.
 
 ```shell
 $ ./mvnw clean verify
-$ ./run demo -d arg1 arg2
+$ ./run demo -d arg1 arg2  # Try out option parsing
+$ ./run example  # Example from picocli-shell-jline3
 ```
 
 ---

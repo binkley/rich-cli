@@ -351,10 +351,13 @@
                                 <rule>
                                     <limits>
                                         <limit>
-                                            <!-- TODO: JaCoCo is not picking
-                                                  up on the constructors with
-                                                  defaults -->
-                                            <minimum>90%</minimum>
+                                            <!--
+                                            TODO: JaCoCo is not picking up on
+                                              the constructors with defaults
+                                            TODO: Example is messy Java code
+                                              converted to Kotlin
+                                            -->
+                                            <minimum>86%</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
