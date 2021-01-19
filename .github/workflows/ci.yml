@@ -41,5 +41,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - name: Build and test with Maven under Batect
-        run: ./batect --permanently-enable-telemetry build
+      - name: Build and test with Maven NOT under Batect
+        # TODO: CLI libs & Batect clash: VM crash, or openpty syscall missing
+        # run: ./batect --permanently-enable-telemetry build
+        run: ./mvnw --no-transfer-progress --strict-checksums clean verify
