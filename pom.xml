@@ -34,22 +34,22 @@
 
     <properties>
         <!-- @formatter:off -->
-        <assertj.version>3.18.1</assertj.version>
+        <assertj.version>3.19.0</assertj.version>
         <buildplan-maven-plugin.version>1.4</buildplan-maven-plugin.version>
         <checkstyle.version>8.39</checkstyle.version>
         <dependency-check-maven.version>6.0.3</dependency-check-maven.version>
         <findbugs-annotations.version>3.0.1</findbugs-annotations.version>
         <findsecbugs-plugin.version>1.11.0</findsecbugs-plugin.version>
         <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
-        <jansi.version>2.1.1</jansi.version>
+        <jansi.version>2.2.0</jansi.version>
         <java.charset>UTF-8</java.charset>
         <jdk.version>11</jdk.version>
-        <junit.version>5.7.0</junit.version>
-        <kotest.version>4.4.0.RC2</kotest.version>
+        <junit.version>5.7.1</junit.version>
+        <kotest.version>4.4.0</kotest.version>
         <kotlin.compiler.jvmTarget>${jdk.version}</kotlin.compiler.jvmTarget>
         <kotlin.version>1.4.30</kotlin.version>
         <ktlint-maven-plugin.version>1.7.0</ktlint-maven-plugin.version>
-        <lombok.version>1.18.16</lombok.version>
+        <lombok.version>1.18.18</lombok.version>
         <main.class>hm.binkley.cli.DemoKt</main.class>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
         <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
