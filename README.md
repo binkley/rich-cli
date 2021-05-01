@@ -7,7 +7,8 @@ align="right"/>
 
 [![build](https://github.com/binkley/rich-cli/workflows/build/badge.svg)](https://github.com/binkley/rich-cli/actions)
 [![issues](https://img.shields.io/github/issues/binkley/rich-cli.svg)](https://github.com/binkley/rich-cli/issues/)
-[![Public Domain](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](http://unlicense.org/)
+[![vulnerabilities](https://snyk.io/test/github/binkley/rich-cli/badge.svg)](https://snyk.io/test/github/binkley/rich-cli)
+[![license](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](http://unlicense.org/)
 
 "Rich CLI" is an integration of "command-line interface" (CLI) libraries for
 JVM languages (Java, Kotlin, et al), providing a good programmer experience
