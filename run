@@ -1,15 +1,56 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2214,SC2215
 
+readonly package=hm.binkley.cli
+readonly artifactId=rich-cli
+readonly version=0-SNAPSHOT
+readonly -a jvm_flags=(--add-opens java.base/java.lang=ALL-UNNAMED)
+
+# No editable parts below here
+
 export PS4='+${BASH_SOURCE}:${LINENO}:${FUNCNAME[0]:+${FUNCNAME[0]}():} '
 
 set -e
 set -u
 set -o pipefail
 
-package=hm.binkley.cli
-artifactId=rich-cli
-version=0-SNAPSHOT
+readonly jar=target/$artifactId-$version-jar-with-dependencies.jar
+readonly progname="${0##*/}"
+
+function print-help() {
+    cat <<EOH
+Usage: $progname [-dh][-L|--language java|kotlin]
+Runs examples for this library.
+
+  -L, --language [LANGUAGE]  runs the example for LANGUAGE; languages:
+                                java
+                                kotlin (the default)
+  -d, --debug                print script execution to STDERR
+  -h, --help                 display this help and exit
+
+Examples:
+  $progname            Runs the kotlin example
+  $progname -L java    Runs the java example
+EOH
+}
+
+function bad-language() {
+    local language="$1"
+
+    cat <<EOM
+$progname: invalid language -- '$language'
+Try '$progname --help' for more information.
+EOM
+}
+
+function bad-option() {
+    local opt="$1"
+
+    cat <<EOM
+$progname: invalid option -- '$opt'
+Try '$progname --help' for more information.
+EOM
+}
 
 function mangle-kotlin-classname() {
     local IFS=.
@@ -37,29 +78,39 @@ function rebuild-if-needed() {
 }
 
 debug=false
-while getopts :d-: opt; do
+language=kotlin
+while getopts :L:d:h-: opt; do
     [[ $opt == - ]] && opt=${OPTARG%%=*} OPTARG=${OPTARG#*=}
     case $opt in
+    L | language) case "$OPTARG" in
+        kotlin | java) language="$OPTARG" ;;
+        *)
+            bad-language "$OPTARG"
+            exit 2
+            ;;
+        esac ;;
     d | debug) debug=true ;;
-    *) exit 2 ;;
+    h | help)
+        print-help
+        exit 0
+        ;;
+    *)
+        bad-option "$opt"
+        exit 2
+        ;;
     esac
 done
 shift $((OPTIND - 1))
 
 $debug && set -x
 
-readonly jar=target/$artifactId-$version-jar-with-dependencies.jar
-
-case $# in
-0) set - -jar "$jar" ;;
-*)
-    class="$1"
-    shift
-    set - -cp "$jar" "$(mangle-kotlin-classname "$package.$class")" "$@"
-    ;;
+case $language in
+java) set - -cp "$jar" "$package.JavaMain" "$@" ;;
+kotlin) set - -jar "$jar" "$@" ;;
 esac
+
 $debug && set -x # "set - ..." clears the -x flag
 
 rebuild-if-needed
 
-exec java "$@"
+exec java "${jvm_flags[@]}" "$@"
